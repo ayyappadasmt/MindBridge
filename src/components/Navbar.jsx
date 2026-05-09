@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth }  from "../context/AuthContext";
+import { useTheme } from "../hooks/useTheme";
 
 const links = [
   { to: "/dashboard", label: "Home",    icon: "🏠" },
@@ -11,6 +12,7 @@ const links = [
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { pathname }     = useLocation();
+  const { isDark, toggle } = useTheme();
 
   return (
     <nav className="fixed top-0 inset-x-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-100 dark:border-slate-800">
@@ -36,14 +38,25 @@ export default function Navbar() {
           ))}
         </div>
 
-        {user && (
+        <div className="flex items-center gap-3">
+          {/* Dark mode toggle */}
           <button
-            onClick={logout}
-            className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+            onClick={toggle}
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >
-            Sign out
+            {isDark ? "☀️" : "🌙"}
           </button>
-        )}
+
+          {user && (
+            <button
+              onClick={logout}
+              className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+            >
+              Sign out
+            </button>
+          )}
+        </div>
       </div>
     </nav>
   );
