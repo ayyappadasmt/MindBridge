@@ -1,0 +1,50 @@
+# ============================================================
+# MindBridge — .dockerignore
+# Prevents secrets, local config, and dev artifacts from
+# entering the Docker image.
+# ============================================================
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets & credentials — NEVER in image
+.env
+*.json
+serviceAccountKey*
+*ServiceAccount*
+*credentials*
+firebase*.json
+
+# Tests
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git
+.git/
+.gitignore
+
+# Docs & infra (not needed in runtime image)
+docs/
+infra/
+*.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

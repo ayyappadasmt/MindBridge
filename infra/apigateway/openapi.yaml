@@ -1,0 +1,198 @@
+# ============================================================
+# MindBridge — API Gateway OpenAPI Configuration
+# Member 1: Infrastructure & Security
+#
+# Architecture:
+#   Frontend → API Gateway (HTTPS + API key) → Cloud Run Backend
+#
+# Deploy with:
+#   gcloud api-gateway apis create mindbridge-api --project=$PROJECT_ID
+#   gcloud api-gateway api-configs create mindbridge-config-v1 \
+#     --api=mindbridge-api \
+#     --openapi-spec=infra/apigateway/openapi.yaml \
+#     --project=$PROJECT_ID \
+#     --backend-auth-service-account=mindbridge-backend@$PROJECT_ID.iam.gserviceaccount.com
+#   gcloud api-gateway gateways create mindbridge-gateway \
+#     --api=mindbridge-api \
+#     --api-config=mindbridge-config-v1 \
+#     --location=us-central1 \
+#     --project=$PROJECT_ID
+# ============================================================
+
+swagger: "2.0"
+info:
+  title: MindBridge API Gateway
+  description: >
+    Secure entry point for the MindBridge mental wellness platform.
+    All requests are authenticated via Firebase ID tokens.
+    Raw journal text never traverses this gateway — only anonymized metadata.
+  version: "1.0.0"
+
+# Replace with your actual Cloud Run URL after first deploy
+# Format: https://<service>-<hash>-<region>.a.run.app
+x-google-backend:
+  address: https://mindbridge-backend-REPLACE_HASH-uc.a.run.app
+  path_translation: APPEND_PATH_TO_ADDRESS
+  jwt_audience: https://mindbridge-backend-REPLACE_HASH-uc.a.run.app
+
+host: "mindbridge-gateway-REPLACE.uc.gateway.dev"
+basePath: "/"
+schemes:
+  - https
+produces:
+  - application/json
+
+# ── Security Definitions ──────────────────────────────────────────────────────
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: implicit
+    type: oauth2
+    x-google-issuer: "https://securetoken.google.com/REPLACE_PROJECT_ID"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "REPLACE_PROJECT_ID"
+
+# ── Paths ─────────────────────────────────────────────────────────────────────
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Service liveness check (public)
+      responses:
+        "200":
+          description: Service is healthy
+
+  /pathway/analyze:
+    post:
+      operationId: analyzeDistress
+      summary: Analyze distress metadata and return support pathway
+      description: >
+        Receives anonymized distress metadata from the frontend edge-AI layer.
+        Raw journal text NEVER reaches this endpoint.
+      security:
+        - firebase: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/DistressSignal"
+      responses:
+        "200":
+          description: Support pathway returned
+        "400":
+          description: Invalid input
+        "401":
+          description: Unauthorized
+
+  /safety-plan/:
+    post:
+      operationId: createSafetyPlan
+      summary: Create a personal safety plan
+      security:
+        - firebase: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/SafetyPlanItem"
+      responses:
+        "200":
+          description: Plan created
+
+  /safety-plan/{user_id}:
+    get:
+      operationId: getSafetyPlan
+      summary: Get a user's safety plan
+      security:
+        - firebase: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Safety plan retrieved
+        "404":
+          description: Not found
+
+  /notifications/checkin:
+    post:
+      operationId: sendCheckin
+      summary: Send proactive FCM check-in notification
+      security:
+        - firebase: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/NotificationRequest"
+      responses:
+        "200":
+          description: Notification sent
+
+  /insights/community:
+    get:
+      operationId: communityInsights
+      summary: Admin — fetch anonymized community health trends
+      security:
+        - firebase: []
+      parameters:
+        - in: query
+          name: days
+          type: integer
+          default: 7
+      responses:
+        "200":
+          description: Trend data returned
+
+# ── Models ────────────────────────────────────────────────────────────────────
+definitions:
+  DistressSignal:
+    type: object
+    required:
+      - distress_score
+      - distress_category
+    properties:
+      distress_score:
+        type: number
+        minimum: 0.0
+        maximum: 1.0
+      distress_category:
+        type: string
+      region_id:
+        type: string
+
+  SafetyPlanItem:
+    type: object
+    required:
+      - user_id
+      - coping_strategies
+    properties:
+      user_id:
+        type: string
+      coping_strategies:
+        type: array
+        items:
+          type: string
+      emergency_contacts:
+        type: array
+        items:
+          type: string
+
+  NotificationRequest:
+    type: object
+    required:
+      - fcm_token
+      - message_title
+      - message_body
+    properties:
+      fcm_token:
+        type: string
+      message_title:
+        type: string
+      message_body:
+        type: string
