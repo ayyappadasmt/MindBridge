@@ -1,0 +1,32 @@
+[
+  {
+    "name": "event_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "region_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "stress_category",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "distress_level",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "platform",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

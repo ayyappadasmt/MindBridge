@@ -1,0 +1,27 @@
+# MindBridge Backend — Python Dependencies
+# Integrated: Member 1 + Member 2 + Member 4
+#
+# Notes:
+#   - google-cloud-aiplatform includes vertexai as a sub-package (no separate install needed)
+#   - google-auth is required by fcm_service.py for ADC token refresh
+#   - python-jose retained for any future JWT work (not currently used in core flow)
+#   - All versions pinned for reproducible builds
+
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.1
+pydantic-settings==2.3.0
+
+# GCP / Firebase
+google-cloud-firestore==2.16.0
+google-cloud-bigquery==3.23.1
+google-cloud-aiplatform==1.57.0
+google-auth==2.29.0
+firebase-admin==6.5.0
+
+# HTTP client (FCM v1 API)
+httpx==0.27.0
+
+# Utilities
+python-dotenv==1.0.1
+python-jose[cryptography]==3.3.0
