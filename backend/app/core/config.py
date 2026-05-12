@@ -19,7 +19,8 @@ class Settings(BaseSettings):
 
     # ── Vertex AI ─────────────────────────────────────────────────
     # Member 2 used "gemini-1.5-flash" (no -001 suffix); align to versioned model
-    VERTEX_AI_MODEL: str = "gemini-1.5-flash-001"
+    VERTEX_AI_MODEL: str = "gemini-1.5-flash"
+    GEMINI_API_KEY: str
 
     # ── BigQuery ──────────────────────────────────────────────────
     BIGQUERY_DATASET: str = "mindbridge_insights"
@@ -28,8 +29,8 @@ class Settings(BaseSettings):
     # ── Firebase / Firestore ──────────────────────────────────────
     # Production: JSON string injected from Secret Manager as env var.
     # Local dev: file path to serviceAccountKey.json (NEVER commit this file).
-    FIREBASE_SERVICE_ACCOUNT_JSON: str = ""   # JSON string (Cloud Run / prod)
-    FIREBASE_SERVICE_ACCOUNT_KEY: str = ""    # File path (local dev only)
+    FIREBASE_SERVICE_ACCOUNT_JSON: str = ""  # JSON string (Cloud Run / prod)
+    FIREBASE_SERVICE_ACCOUNT_KEY: str = ""  # File path (local dev only)
 
     # Firebase project ID for token verification
     FIREBASE_PROJECT_ID: str = ""

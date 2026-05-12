@@ -23,6 +23,7 @@ PUBLIC_PATHS = {
     "/docs",
     "/openapi.json",
     "/redoc",
+    "/chat/message",
 }
 
 
@@ -50,7 +51,9 @@ class FirebaseAuthMiddleware(BaseHTTPMiddleware):
         except firebase_auth.ExpiredIdTokenError:
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                content={"detail": "Firebase token has expired. Please re-authenticate."},
+                content={
+                    "detail": "Firebase token has expired. Please re-authenticate."
+                },
             )
         except firebase_auth.InvalidIdTokenError as e:
             return JSONResponse(

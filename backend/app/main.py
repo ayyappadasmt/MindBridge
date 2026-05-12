@@ -31,9 +31,7 @@ app = FastAPI(
 )
 
 # ── CORS — Explicit allowed origins only (Member 1 fix, replaces M4's wildcard) ─
-allowed_origins = [
-    o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()
-]
+allowed_origins = [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,

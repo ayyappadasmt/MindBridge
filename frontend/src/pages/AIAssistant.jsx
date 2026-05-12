@@ -17,7 +17,16 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Bot, User, Sparkles, RefreshCw, AlertCircle, PhoneCall } from "lucide-react";
+import {
+  Send,
+  Bot,
+  User,
+  Sparkles,
+  RefreshCw,
+  AlertCircle,
+  PhoneCall,
+  Music
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -50,7 +59,177 @@ function TypingIndicator() {
     </div>
   );
 }
+function EmotionInsightCard({
+  emotion,
+  score,
+  music
+}) {
 
+  if (!emotion) return null;
+
+  return (
+
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="
+        mt-4
+        rounded-2xl
+        border
+        border-brand-100
+        dark:border-brand-900
+        bg-gradient-to-r
+        from-brand-50/60
+        to-teal-50/40
+        dark:from-brand-950/30
+        dark:to-teal-950/20
+        p-4
+      "
+    >
+
+      <div className="flex items-center gap-2 mb-3">
+
+        <Sparkles
+          size={15}
+          className="text-brand-500"
+        />
+
+        <p className="
+          text-sm
+          font-semibold
+          text-surface-800
+          dark:text-surface-200
+        ">
+          Vertex AI Emotional Insight
+        </p>
+
+      </div>
+
+      <div className="mb-4">
+
+        <p className="
+          text-xs
+          uppercase
+          tracking-wide
+          text-surface-500
+          mb-2
+        ">
+          Detected Emotional State
+        </p>
+
+        <div className="flex items-center gap-2">
+
+          <div className="
+            px-3
+            py-1
+            rounded-full
+            bg-brand-500
+            text-white
+            text-xs
+            font-medium
+          ">
+            {emotion}
+          </div>
+
+          <span className="
+            text-xs
+            text-surface-500
+          ">
+            {Math.round(score * 100)}% confidence
+          </span>
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <p className="
+          text-xs
+          uppercase
+          tracking-wide
+          text-surface-500
+          mb-2
+        ">
+          Recommended Audio
+        </p>
+
+        <div className="space-y-2">
+
+          {music?.map((item, index) => (
+
+            <a
+              key={index}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                flex
+                items-center
+                gap-3
+                p-3
+                rounded-xl
+                bg-white
+                dark:bg-surface-900
+                border
+                border-surface-200
+                dark:border-surface-800
+                hover:border-brand-300
+                dark:hover:border-brand-700
+                transition-all
+                duration-150
+              "
+            >
+
+              <div className="
+                w-9
+                h-9
+                rounded-xl
+                bg-brand-50
+                dark:bg-brand-950/50
+                flex
+                items-center
+                justify-center
+                flex-shrink-0
+              ">
+                <Music
+                  size={15}
+                  className="text-brand-500"
+                />
+              </div>
+
+              <div className="flex-1 min-w-0">
+
+                <p className="
+                  text-sm
+                  font-medium
+                  text-surface-800
+                  dark:text-surface-200
+                ">
+                  {item.title}
+                </p>
+
+                <p className="
+                  text-xs
+                  text-surface-500
+                  capitalize
+                ">
+                  {item.type}
+                </p>
+
+              </div>
+
+            </a>
+
+          ))}
+
+        </div>
+
+      </div>
+
+    </motion.div>
+  );
+}
 function ChatMessage({ message }) {
   const isUser = message.role === "user";
   return (
@@ -63,7 +242,22 @@ function ChatMessage({ message }) {
         <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${isUser
           ? "bg-brand-500 text-white rounded-tr-sm"
           : "bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 text-surface-800 dark:text-surface-200 rounded-tl-sm shadow-card"}`}>
-          {message.content}
+          <>
+  {message.content}
+
+  {
+    !isUser &&
+    message.emotion && (
+
+      <EmotionInsightCard
+        emotion={message.emotion}
+        score={message.emotion_score}
+        music={message.music}
+      />
+
+    )
+  }
+</>
         </div>
         {message.is_crisis && (
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 mt-1">
@@ -113,14 +307,34 @@ export default function AIAssistant() {
       // Route through FastAPI backend → Vertex AI Gemini (server-side)
       // No CORS issue, no API key in browser
       const history = nextMessages.map(m => ({ role: m.role, content: m.content }));
-      const { reply, is_crisis } = await sendChatMessage(history);
+      const {
+  reply,
+  is_crisis,
+  emotion,
+  emotion_score,
+  music
+} = await sendChatMessage(history);
 
       setMessages(prev => [...prev, {
-        role: "assistant",
-        content: reply,
-        is_crisis: is_crisis,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      }]);
+
+  role: "assistant",
+
+  content: reply,
+
+  is_crisis: is_crisis,
+
+  emotion: emotion,
+
+  emotion_score: emotion_score,
+
+  music: music,
+
+  time: new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  }),
+
+}]);
     } catch {
       // Graceful fallback — never show a bare error to a wellness user
       const fallback = FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
