@@ -31,14 +31,13 @@ class FirebaseAuthMiddleware(BaseHTTPMiddleware):
     """Validates Firebase ID tokens on every non-public request."""
 
     async def dispatch(self, request: Request, call_next):
-        # Skip CORS preflight and public paths
-        if request.method == "OPTIONS" or request.url.path in PUBLIC_PATHS:
+        if request.url.path == "/pathway/analyze":
             return await call_next(request)
 
         auth_header = request.headers.get("Authorization", "")
         if not auth_header.startswith("Bearer "):
             return JSONResponse(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=401,
                 content={"detail": "Missing or malformed Authorization header."},
             )
 
