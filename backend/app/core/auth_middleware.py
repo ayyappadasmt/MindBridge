@@ -31,7 +31,7 @@ class FirebaseAuthMiddleware(BaseHTTPMiddleware):
     """Validates Firebase ID tokens on every non-public request."""
 
     async def dispatch(self, request: Request, call_next):
-        if request.url.path == "/pathway/analyze":
+        if request.url.path in ["/pathway/analyze", "/safety-plan/"]:
             return await call_next(request)
 
         auth_header = request.headers.get("Authorization", "")
