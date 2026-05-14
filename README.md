@@ -1,5 +1,7 @@
 <div align="center">
 
+  <img src="frontend/public/mindbridge-banner.png" alt="MindBridge Banner" width="100%" />
+
 # MindBridge
 
 ### Privacy-First Mental Wellness Platform · Edge AI · Cloud-Native · AI-Guided Support
