@@ -2,11 +2,6 @@
 
   <img src="frontend/public/mindbridge-banner.png" alt="MindBridge Banner" width="100%" />
 
-# MindBridge
-
-### Privacy-First Mental Wellness Platform · Edge AI · Cloud-Native · AI-Guided Support
-
-Private reflection in. Local distress analysis. Secure support pathway out.
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge)](README.md)
 [![Status](https://img.shields.io/badge/status-integrated-green.svg?style=for-the-badge)](README.md)
