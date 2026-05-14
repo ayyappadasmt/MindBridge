@@ -670,6 +670,7 @@ MindBridge is an integrated full-stack prototype with a cloud-ready backend and 
 ---
 
 ## Developers
+
 1. [Bhama M Namboodiri](https://github.com/BHAMA2004)
 2. [Swathi B Raj](https://github.com/t0k1t00)
 3. [Bhavana P H](https://github.com/bhavanaharshan)
@@ -678,7 +679,9 @@ MindBridge is an integrated full-stack prototype with a cloud-ready backend and 
 ---
 
 ### License
-[LICENSE](LICENSE)
+
+[View License](LICENSE)
+
 ---
 
 <div align="center">
