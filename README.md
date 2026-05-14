@@ -677,7 +677,7 @@ MindBridge is an integrated full-stack prototype with a cloud-ready backend and 
 
 ---
 
-## License
+### License
 [LICENSE](LICENSE)
 ---
 
