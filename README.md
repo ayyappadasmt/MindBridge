@@ -679,8 +679,7 @@ MindBridge is an integrated full-stack prototype with a cloud-ready backend and 
 
 ## License
 
-This repository is intended for academic, demonstration, or internal project use. Add a license file before distributing or publishing the project publicly.
-
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 ---
 
 <div align="center">
