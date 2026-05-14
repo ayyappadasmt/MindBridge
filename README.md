@@ -680,7 +680,7 @@ MindBridge is an integrated full-stack prototype with a cloud-ready backend and 
 
 ### License
 
-[View License](LICENSE)
+[License](LICENSE)
 
 ---
 
